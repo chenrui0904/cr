@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- 📱 以下是手机访问优化 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-title" content="阵营之战">
+    <!-- 防止电话号码自动识别 -->
+    <meta name="format-detection" content="telephone=no">
+    <!-- 防止邮箱自动识别 -->
+    <meta name="format-detection" content="email=no">
+    <!-- 防止地址自动识别 -->
+    <meta name="format-detection" content="address=no">
+    
+    <title>骑士锐 vs 芊芊牛 · 阵营之战</title>
+    <!-- ... 其他代码不变 ... -->
+    <title>骑士锐 vs 芊芊牛 · 阵营之战</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            font-family: 'ZCOOL QingKe HuangYou', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 游戏标题 */
+        .game-title {
+            text-align: center;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 3.5rem;
+            margin: 20px 0;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 存档系统 */
+        .save-system {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .save-btn, .load-btn {
+            padding: 10px 20px;
+            background: #2d3436;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-family: 'ZCOOL QingKe HuangYou', sans-serif;
+            transition: all 0.3s;
+            border: 2px solid #00cec9;
+        }
+
+        .save-btn:hover, .load-btn:hover {
+            background: #00cec9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 206, 201, 0.4);
+        }
+
+        /* 阵营选择 */
+        .faction-select {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin: 50px auto;
+            max-width: 800px;
+        }
+
+        .faction-card {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .faction-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: #ff6b6b;
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .faction-card:nth-child(2):hover {
+            border-color: #4ecdc4;
+            box-shadow: 0 15px 30px rgba(78, 205, 196, 0.3);
+        }
+
+        .faction-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .faction-name {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .faction-desc {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        /* 游戏主界面 */
+        .game-main {
+            display: none;
+            position: relative;
+            min-height: 500px;
+        }
+
+        /* 玩家信息 */
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #00cec9;
+        }
+
+        .faction-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .knight-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ff9e9e);
+        }
+
+        .cow-badge {
+            background: linear-gradient(45deg, #4ecdc4, #81ecec);
+        }
+
+        .level-info {
+            font-size: 1.5rem;
+        }
+
+        .hp-bar-container {
+            width: 200px;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .hp-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff3838, #ff9f1a);
+            width: 100%;
+            transition: width 0.5s;
+        }
+
+        /* 战斗区域 */
+        .battle-area {
+            position: relative;
+            height: 400px;
+            background: linear-gradient(180deg, #0c2461 0%, #1e3799 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            border: 3px solid #2d3436;
+        }
+
+        .player-character {
+            position: absolute;
+            bottom: 50px;
+            left: 100px;
+            width: 80px;
+            height: 100px;
+            background: url('https://img.icons8.com/color/96/000000/knight.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: left 0.3s;
+            z-index: 10;
+        }
+
+        .cow-character .player-character {
+            background: url('https://img.icons8.com/color/96/000000/cow.png');
+        }
+
+        /* 敌人 */
+        .enemy {
+            position: absolute;
+            bottom: 50px;
+            right: 100px;
+            width: 60px;
+            height: 80px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: all 0.3s;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
+        }
+
+        .enemy.knight {
+            background-image: url('https://img.icons8.com/color/96/000000/knight-head.png');
+        }
+
+        .enemy.cow {
+            background-image: url('https://img.icons8.com/color/96/000000/cow.png');
+        }
+
+        /* 战斗控制 */
+        .battle-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .attack-btn {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #ff3838);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Ma Shan Zheng', cursive;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .attack-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .attack-btn:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        .special-btn {
+            background: linear-gradient(45deg, #4ecdc4, #00cec9);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .special-btn:hover {
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.6);
+        }
+
+        /* 消息面板 */
+        .message-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00cec9;
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 100px;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            animation: fadeIn 0.5s;
+        }
+
+        .message.system {
+            background: rgba(255, 255, 255, 0.1);
+            color: #81ecec;
+        }
+
+        .message.combat {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff9f1a;
+        }
+
+        .message.decision {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        /* 选择面板 */
+        .decision-panel {
+            display: none;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            border: 3px solid #00cec9;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .decision-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ff9f1a;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .decision-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .decision-btn {
+            padding: 15px 30px;
+            font-size: 1.3rem;
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .decision-btn:nth-child(2) {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        .decision-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes attackAnimation {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(50px); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes enemyHit {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-20px); }
+            50% { transform: translateX(20px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes enemyDeath {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .game-title { font-size: 2.5rem; }
+            .faction-select { flex-direction: column; align-items: center; }
+            .faction-card { width: 90%; }
+            .battle-controls { flex-direction: column; align-items: center; }
+            .attack-btn { width: 80%; }
+            .player-info { flex-direction: column; gap: 15px; align-items: center; }
+        }
+
+        /* 进度条动画 */
+        .xp-bar-container {
+            width: 300px;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .xp-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #9b59b6, #8e44ad);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        /* 敌人血条 */
+        .enemy-hp {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .enemy-hp-inner {
+            height: 100%;
+            background: linear-gradient(90deg, #00cec9, #4ecdc4);
+            width: 100%;
+            transition: width 0.3s;
+        }
+
+        /* 胜利动画 */
+        @keyframes victory {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .victory-animation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: #ffd700;
+            animation: victory 1s infinite;
+            display: none;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- 游戏标题 -->
+        <h1 class="game-title">骑士锐 vs 芊芊牛 · 阵营之战</h1>
+        
+        <!-- 存档系统 -->
+        <div class="save-system">
+            <button class="save-btn" id="saveBtn">💾 存档</button>
+            <button class="load-btn" id="loadBtn">📂 读档</button>
+        </div>
+        
+        <!-- 阵营选择 -->
+        <div class="faction-select" id="factionSelect">
+            <div class="faction-card" data-faction="knight">
+                <div class="faction-icon">⚔️</div>
+                <div class="faction-name">骑士锐</div>
+                <div class="faction-desc">
+                    荣耀骑士团，追求正义与荣耀<br>
+                    技能：骑士冲锋、圣盾防御<br>
+                    特点：高防御，中等攻击
+                </div>
+            </div>
+            <div class="faction-card" data-faction="cow">
+                <div class="faction-icon">🐮</div>
+                <div class="faction-name">芊芊牛</div>
+                <div class="faction-desc">
+                    自然守护者，亲近大地与生命<br>
+                    技能：大地震击、生命恢复<br>
+                    特点：高血量，持续作战
+                </div>
+            </div>
+        </div>
+        
+        <!-- 游戏主界面 -->
+        <div class="game-main" id="gameMain">
+            <!-- 玩家信息 -->
+            <div class="player-info">
+                <div>
+                    <span class="faction-badge" id="factionBadge">骑士锐</span>
+                    <div class="level-info">
+                        等级: <span id="playerLevel">1</span> | 
+                        经验: <span id="playerXP">0</span>/<span id="nextLevelXP">100</span>
+                    </div>
+                    <div class="xp-bar-container">
+                        <div class="xp-bar" id="xpBar"></div>
+                    </div>
+                </div>
+                <div>
+                    血量: <span id="playerHP">100</span>/<span id="playerMaxHP">100</span>
+                    <div class="hp-bar-container">
+                        <div class="hp-bar" id="hpBar"></div>
+                    </div>
+                </div>
+                <div>
+                    击杀数: <span id="killCount">0</span><br>
+                    当前敌人: <span id="enemyType">小兵</span>
+                </div>
+            </div>
+            
+            <!-- 战斗区域 -->
+            <div class="battle-area" id="battleArea">
+                <div class="player-character" id="playerCharacter"></div>
+                <div class="enemy" id="enemy">
+                    <div class="enemy-hp">
+                        <div class="enemy-hp-inner" id="enemyHpBar"></div>
+                    </div>
+                </div>
+                <div class="victory-animation" id="victoryAnimation">✨ 胜利 ✨</div>
+            </div>
+            
+            <!-- 战斗控制 -->
+            <div class="battle-controls">
+                <button class="attack-btn" id="attackBtn">⚔️ 攻击</button>
+                <button class="attack-btn special-btn" id="specialBtn">🌟 特殊技能</button>
+                <button class="attack-btn" id="healBtn">💊 恢复</button>
+            </div>
+            
+            <!-- 消息面板 -->
+            <div class="message-panel" id="messagePanel">
+                <div class="message system">欢迎来到阵营之战！请选择你的阵营开始游戏。</div>
+            </div>
+        </div>
+        
+        <!-- 选择面板 -->
+        <div class="decision-panel" id="decisionPanel">
+            <div class="decision-title" id="decisionTitle">已制服敌人首领</div>
+            <div id="decisionText">请选择如何处置：</div>
+            <div class="decision-options">
+                <button class="decision-btn" id="recruitBtn">招安</button>
+                <button class="decision-btn" id="executeBtn">斩了</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音频元素 -->
+    <audio id="bgMusic" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-epic-battle-623.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="attackSound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-sword-slash-2764.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="hitSound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-hard-hit-2152.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="victorySound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="specialSound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sparkles-3009.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="killSound1">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="killSound2">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="killSound3">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ===================== 游戏数据 =====================
+        class GameData {
+            constructor() {
+                this.faction = ''; // knight 或 cow
+                this.level = 1;
+                this.xp = 0;
+                this.maxXp = 100;
+                this.hp = 100;
+                this.maxHp = 100;
+                this.kills = 0;
+                this.currentEnemy = 1; // 1-5个小兵，6为boss
+                this.enemyHp = 50;
+                this.enemyMaxHp = 50;
+                this.enemyType = 'knight'; // 对立阵营
+                this.specialCooldown = 0;
+                this.gameState = 'selection'; // selection, battle, decision
+            }
+            
+            save() {
+                const saveData = {
+                    faction: this.faction,
+                    level: this.level,
+                    xp: this.xp,
+                    maxXp: this.maxXp,
+                    hp: this.hp,
+                    maxHp: this.maxHp,
+                    kills: this.kills,
+                    currentEnemy: this.currentEnemy,
+                    enemyType: this.enemyType,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('knightVsCowSave', JSON.stringify(saveData));
+                return saveData;
+            }
+            
+            load() {
+                const saveData = JSON.parse(localStorage.getItem('knightVsCowSave'));
+                if (saveData) {
+                    this.faction = saveData.faction;
+                    this.level = saveData.level;
+                    this.xp = saveData.xp;
+                    this.maxXp = saveData.maxXp;
+                    this.hp = saveData.hp;
+                    this.maxHp = saveData.maxHp;
+                    this.kills = saveData.kills;
+                    this.currentEnemy = saveData.currentEnemy;
+                    this.enemyType = saveData.enemyType;
+                    return true;
+                }
+                return false;
+            }
+            
+            reset() {
+                this.level = 1;
+                this.xp = 0;
+                this.maxXp = 100;
+                this.hp = 100;
+                this.maxHp = 100;
+                this.kills = 0;
+                this.currentEnemy = 1;
+                this.enemyHp = 50;
+                this.enemyMaxHp = 50;
+                this.specialCooldown = 0;
+            }
+        }
+
+        // ===================== 游戏核心 =====================
+        class KnightVsCowGame {
+            constructor() {
+                this.data = new GameData();
+                this.sounds = {};
+                this.isSpecialReady = true;
+                this.initialize();
+            }
+            
+            initialize() {
+                this.cacheElements();
+                this.bindEvents();
+                this.initSounds();
+                this.updateDisplay();
+            }
+            
+            cacheElements() {
+                this.elements = {
+                    factionSelect: document.getElementById('factionSelect'),
+                    gameMain: document.getElementById('gameMain'),
+                    factionBadge: document.getElementById('factionBadge'),
+                    playerLevel: document.getElementById('playerLevel'),
+                    playerXP: document.getElementById('playerXP'),
+                    nextLevelXP: document.getElementById('nextLevelXP'),
+                    xpBar: document.getElementById('xpBar'),
+                    playerHP: document.getElementById('playerHP'),
+                    playerMaxHP: document.getElementById('playerMaxHP'),
+                    hpBar: document.getElementById('hpBar'),
+                    killCount: document.getElementById('killCount'),
+                    enemyType: document.getElementById('enemyType'),
+                    battleArea: document.getElementById('battleArea'),
+                    playerCharacter: document.getElementById('playerCharacter'),
+                    enemy: document.getElementById('enemy'),
+                    enemyHpBar: document.getElementById('enemyHpBar'),
+                    attackBtn: document.getElementById('attackBtn'),
+                    specialBtn: document.getElementById('specialBtn'),
+                    healBtn: document.getElementById('healBtn'),
+                    messagePanel: document.getElementById('messagePanel'),
+                    decisionPanel: document.getElementById('decisionPanel'),
+                    decisionTitle: document.getElementById('decisionTitle'),
+                    decisionText: document.getElementById('decisionText'),
+                    recruitBtn: document.getElementById('recruitBtn'),
+                    executeBtn: document.getElementById('executeBtn'),
+                    victoryAnimation: document.getElementById('victoryAnimation'),
+                    saveBtn: document.getElementById('saveBtn'),
+                    loadBtn: document.getElementById('loadBtn')
+                };
+            }
+            
+            bindEvents() {
+                // 阵营选择
+                document.querySelectorAll('.faction-card').forEach(card => {
+                    card.addEventListener('click', (e) => this.selectFaction(e));
+                });
+                
+                // 战斗按钮
+                this.elements.attackBtn.addEventListener('click', () => this.attack());
+                this.elements.specialBtn.addEventListener('click', () => this.useSpecial());
+                this.elements.healBtn.addEventListener('click', () => this.heal());
+                
+                // 决策按钮
+                this.elements.recruitBtn.addEventListener('click', () => this.makeDecision('recruit'));
+                this.elements.executeBtn.addEventListener('click', () => this.makeDecision('execute'));
+                
+                // 存档系统
+                this.elements.saveBtn.addEventListener('click', () => this.saveGame());
+                this.elements.loadBtn.addEventListener('click', () => this.loadGame());
+            }
+            
+            initSounds() {
+                this.sounds = {
+                    bgMusic: document.getElementById('bgMusic'),
+                    attack: document.getElementById('attackSound'),
+                    hit: document.getElementById('hitSound'),
+                    victory: document.getElementById('victorySound'),
+                    special: document.getElementById('specialSound'),
+                    kill1: document.getElementById('killSound1'),
+                    kill2: document.getElementById('killSound2'),
+                    kill3: document.getElementById('killSound3')
+                };
+                
+                // 设置音量
+                Object.values(this.sounds).forEach(sound => {
+                    sound.volume = 0.5;
+                });
+                this.sounds.bgMusic.volume = 0.3;
+                
+                // 尝试播放背景音乐
+                this.sounds.bgMusic.play().catch(e => {
+                    console.log("需要用户交互才能播放音乐");
+                });
+            }
+            
+            // ===================== 游戏流程 =====================
+            selectFaction(event) {
+                const faction = event.currentTarget.dataset.faction;
+                this.data.faction = faction;
+                this.data.enemyType = faction === 'knight' ? 'cow' : 'knight';
+                
+                // 更新界面
+                this.elements.factionSelect.style.display = 'none';
+                this.elements.gameMain.style.display = 'block';
+                
+                // 更新阵营标识
+                const isKnight = faction === 'knight';
+                this.elements.factionBadge.textContent = isKnight ? '骑士锐' : '芊芊牛';
+                this.elements.factionBadge.className = 'faction-badge ' + (isKnight ? 'knight-badge' : 'cow-badge');
+                
+                // 更新角色外观
+                this.elements.battleArea.className = isKnight ? 'battle-area' : 'battle-area cow-character';
+                this.elements.playerCharacter.style.backgroundImage = isKnight ? 
+                    "url('https://img.icons8.com/color/96/000000/knight.png')" :
+                    "url('https://img.icons8.com/color/96/000000/cow.png')";
+                
+                // 生成第一个敌人
+                this.spawnEnemy();
+                
+                this.addMessage('system', '已加入阵营：' + (isKnight ? '骑士锐 🛡️' : '芊芊牛 🐮'));
+                this.addMessage('system', '击败5个敌方小兵，然后挑战敌方首领！');
+                
+                this.data.gameState = 'battle';
+                this.updateDisplay();
+            }
+            
+            spawnEnemy() {
+                const isBoss = this.data.currentEnemy === 6;
+                const enemyFaction = this.data.enemyType;
+                const enemyName = isBoss ? '首领' : '小兵';
+                
+                this.data.enemyMaxHp = isBoss ? 200 : (30 + this.data.level * 5);
+                this.data.enemyHp = this.data.enemyMaxHp;
+                
+                this.elements.enemy.className = 'enemy ' + enemyFaction;
+                this.elements.enemyType.textContent = (enemyFaction === 'knight' ? '骑士锐' : '芊芊牛') + enemyName;
+                this.elements.enemy.style.right = '100px';
+                this.elements.enemy.style.opacity = '1';
+                this.elements.enemy.style.transform = 'scale(1)';
+                
+                if (isBoss) {
+                    this.elements.enemy.style.width = '80px';
+                    this.elements.enemy.style.height = '100px';
+                    this.addMessage('system', '⚠️ 警告：敌方首领出现！');
+                }
+                
+                this.updateEnemyDisplay();
+            }
+            
+            attack() {
+                if (this.data.gameState !== 'battle') return;
+                
+                // 玩家攻击动画
+                this.elements.playerCharacter.style.animation = 'attackAnimation 0.3s';
+                setTimeout(() => {
+                    this.elements.playerCharacter.style.animation = '';
+                }, 300);
+                
+                // 播放攻击音效
+                this.playSound(this.sounds.attack);
+                
+                // 计算伤害
+                const baseDamage = 10 + this.data.level * 2;
+                const damage = Math.floor(baseDamage + Math.random() * 10);
+                
+                this.data.enemyHp -= damage;
+                if (this.data.enemyHp < 0) this.data.enemyHp = 0;
+                
+                // 敌人受击动画
+                this.elements.enemy.style.animation = 'enemyHit 0.3s';
+                setTimeout(() => {
+                    this.elements.enemy.style.animation = '';
+                }, 300);
+                
+                this.playSound(this.sounds.hit);
+                this.addMessage('combat', `你对敌人造成了 ${damage} 点伤害！`);
+                
+                // 检查敌人是否死亡
+                if (this.data.enemyHp <= 0) {
+                    this.killEnemy();
+                } else {
+                    // 敌人反击
+                    setTimeout(() => this.enemyAttack(), 500);
+                }
+                
+                this.updateDisplay();
+            }
+            
+            enemyAttack() {
+                const isBoss = this.data.currentEnemy === 6;
+                const baseDamage = isBoss ? 15 : (5 + this.data.level);
+                const damage = Math.floor(baseDamage + Math.random() * 8);
+                
+                this.data.hp -= damage;
+                if (this.data.hp < 0) this.data.hp = 0;
+                
+                this.playSound(this.sounds.hit);
+                this.addMessage('combat', `敌人对你造成了 ${damage} 点伤害！`);
+                
+                if (this.data.hp <= 0) {
+                    this.gameOver();
+                }
+                
+                this.updateDisplay();
+            }
+            
+            killEnemy() {
+                const isBoss = this.data.currentEnemy === 6;
+                
+                // 敌人死亡动画
+                this.elements.enemy.style.animation = 'enemyDeath 0.5s forwards';
+                this.playSound(this.sounds.victory);
+                
+                // 增加击杀数
+                this.data.kills++;
+                
+                // 增加经验
+                const xpGained = isBoss ? 100 : 20;
+                this.data.xp += xpGained;
+                
+                // 检查升级
+                this.checkLevelUp();
+                
+                // 特殊击杀提示
+                this.showKillMessage();
+                
+                // 生成下一个敌人
+                setTimeout(() => {
+                    if (isBoss) {
+                        this.showDecision();
+                    } else {
+                        this.data.currentEnemy++;
+                        this.spawnEnemy();
+                    }
+                    this.updateDisplay();
+                }, 1000);
+            }
+            
+            showKillMessage() {
+                const enemyName = this.data.enemyType === 'knight' ? '骑士锐' : '芊芊牛';
+                const playerName = this.data.faction === 'knight' ? '骑士锐' : '芊芊牛';
+                const killCount = this.data.kills;
+                
+                let message = '';
+                let sound = this.sounds.kill1;
+                
+                switch(killCount) {
+                    case 1:
+                        message = `🚨 系统提示：制服了${enemyName}的小弟！`;
+                        sound = this.sounds.kill1;
+                        break;
+                    case 2:
+                        message = `💢 你这个鬼人，还敢学我？`;
+                        sound = this.sounds.kill2;
+                        break;
+                    case 3:
+                        message = `🔥 就这点本事吗？${playerName}的威严不容侵犯！`;
+                        sound = this.sounds.kill2;
+                        break;
+                    case 4:
+                        message = `⚡ 再来的都是送经验的！`;
+                        sound = this.sounds.kill2;
+                        break;
+                    case 5:
+                        message = `🎯 热身结束，让首领出来见我！`;
+                        sound = this.sounds.kill3;
+                        break;
+                    case 6:
+                        message = `👑 已制服${enemyName}首领！`;
+                        sound = this.sounds.kill3;
+                        break;
+                }
+                
+                this.playSound(sound);
+                this.addMessage('combat', message);
+                
+                // 显示胜利动画
+                if (killCount === 6) {
+                    this.elements.victoryAnimation.style.display = 'block';
+                    setTimeout(() => {
+                        this.elements.victoryAnimation.style.display = 'none';
+                    }, 2000);
+                }
+            }
+            
+            useSpecial() {
+                if (!this.isSpecialReady) return;
+                
+                const isKnight = this.data.faction === 'knight';
+                const specialName = isKnight ? '骑士冲锋' : '大地震击';
+                
+                // 技能特效
+                this.playSound(this.sounds.special);
+                this.addMessage('combat', `发动技能：${specialName}！`);
+                
+                // 计算伤害
+                const damage = isKnight ? 
+                    Math.floor(25 + this.data.level * 3) : // 骑士：高爆发
+                    Math.floor(15 + this.data.level * 2);   // 牛牛：持续伤害
+                
+                this.data.enemyHp -= damage;
+                if (this.data.enemyHp < 0) this.data.enemyHp = 0;
+                
+                // 技能附加效果
+                if (isKnight) {
+                    // 骑士：自己获得护盾
+                    const shield = Math.floor(damage * 0.5);
+                    this.addMessage('combat', `获得 ${shield} 点护盾！`);
+                } else {
+                    // 牛牛：造成持续伤害
+                    setTimeout(() => {
+                        if (this.data.enemyHp > 0) {
+                            const dotDamage = Math.floor(damage * 0.3);
+                            this.data.enemyHp -= dotDamage;
+                            this.addMessage('combat', `大地震击持续伤害：${dotDamage}点！`);
+                            this.updateDisplay();
+                        }
+                    }, 1000);
+                }
+                
+                // 冷却时间
+                this.isSpecialReady = false;
+                this.elements.specialBtn.disabled = true;
+                this.elements.specialBtn.style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    this.isSpecialReady = true;
+                    this.elements.specialBtn.disabled = false;
+                    this.elements.specialBtn.style.opacity = '1';
+                    this.addMessage('system', '特殊技能已就绪！');
+                }, 5000);
+                
+                if (this.data.enemyHp <= 0) {
+                    this.killEnemy();
+                } else {
+                    setTimeout(() => this.enemyAttack(), 500);
+                }
+                
+                this.updateDisplay();
+            }
+            
+            heal() {
+                if (this.data.hp >= this.data.maxHp) {
+                    this.addMessage('system', '生命值已满！');
+                    return;
+                }
+                
+                const healAmount = Math.floor(this.data.maxHp * 0.3);
+                this.data.hp = Math.min(this.data.hp + healAmount, this.data.maxHp);
+                
+                this.addMessage('combat', `使用恢复药水，恢复 ${healAmount} 点生命值！`);
+                
+                // 敌人也会趁机攻击
+                setTimeout(() => this.enemyAttack(), 300);
+                
+                this.updateDisplay();
+            }
+            
+            checkLevelUp() {
+                if (this.data.xp >= this.data.maxXp) {
+                    this.data.level++;
+                    this.data.xp -= this.data.maxXp;
+                    this.data.maxXp = Math.floor(this.data.maxXp * 1.5);
+                    this.data.maxHp += 20;
+                    this.data.hp = this.data.maxHp;
+                    
+                    this.addMessage('system', `🎉 升级！现在是等级 ${this.data.level}！`);
+                    this.addMessage('system', `最大生命值提升到 ${this.data.maxHp}！`);
+                    
+                    this.playSound(this.sounds.victory);
+                }
+            }
+            
+            showDecision() {
+                this.data.gameState = 'decision';
+                const enemyName = this.data.enemyType === 'knight' ? '骑士锐' : '芊芊牛';
+                
+                this.elements.decisionTitle.textContent = `已制服${enemyName}首领`;
+                this.elements.decisionText.innerHTML = `
+                    <p>${enemyName}首领已无还手之力</p>
+                    <p>请选择处置方式：</p>
+                    <p style="color: #ff9f1a; margin-top: 10px;">
+                        招安：获得额外经验和奖励<br>
+                        斩了：直接结束游戏，获得成就
+                    </p>
+                `;
+                
+                this.elements.decisionPanel.style.display = 'block';
+            }
+            
+            makeDecision(choice) {
+                const enemyName = this.data.enemyType === 'knight' ? '骑士锐' : '芊芊牛';
+                
+                if (choice === 'recruit') {
+                    this.addMessage('decision', `你选择了招安${enemyName}首领。`);
+                    this.addMessage('decision', `获得 ${enemyName} 阵营的效忠！`);
+                    this.data.xp += 200;
+                    this.data.maxHp += 50;
+                    this.data.hp = this.data.maxHp;
+                    this.checkLevelUp();
+                } else {
+                    this.addMessage('decision', `你选择了处决${enemyName}首领。`);
+                    this.addMessage('decision', `游戏结束！获得成就：${enemyName}终结者！`);
+                }
+                
+                this.elements.decisionPanel.style.display = 'none';
+                this.data.gameState = 'battle';
+                
+                // 重新开始游戏或显示胜利
+                setTimeout(() => {
+                    if (choice === 'recruit') {
+                        this.addMessage('system', '新的挑战即将开始...');
+                        setTimeout(() => {
+                            this.data.currentEnemy = 1;
+                            this.data.kills = 0;
+                            this.spawnEnemy();
+                            this.updateDisplay();
+                        }, 2000);
+                    } else {
+                        this.showGameEnd();
+                    }
+                }, 1000);
+            }
+            
+            showGameEnd() {
+                this.addMessage('system', '========== 游戏结束 ==========');
+                this.addMessage('system', `最终等级：${this.data.level}`);
+                this.addMessage('system', `总击杀数：${this.data.kills}`);
+                this.addMessage('system', '感谢游玩！可以重新开始游戏。');
+                
+                this.elements.attackBtn.disabled = true;
+                this.elements.specialBtn.disabled = true;
+                this.elements.healBtn.disabled = true;
+            }
+            
+            gameOver() {
+                this.addMessage('system', '💀 你被击败了...');
+                this.addMessage('system', `游戏结束！你达到了等级 ${this.data.level}`);
+                this.addMessage('system', '点击"读档"可以重新开始，或者刷新页面。');
+                
+                this.elements.attackBtn.disabled = true;
+                this.elements.specialBtn.disabled = true;
+                this.elements.healBtn.disabled = true;
+            }
+            
+            // ===================== 工具方法 =====================
+            updateDisplay() {
+                // 玩家信息
+                this.elements.playerLevel.textContent = this.data.level;
+                this.elements.playerXP.textContent = this.data.xp;
+                this.elements.nextLevelXP.textContent = this.data.maxXp;
+                this.elements.playerHP.textContent = this.data.hp;
+                this.elements.playerMaxHP.textContent = this.data.maxHp;
+                this.elements.killCount.textContent = this.data.kills;
+                
+                // 进度条
+                const xpPercent = (this.data.xp / this.data.maxXp) * 100;
+                this.elements.xpBar.style.width = `${xpPercent}%`;
+                
+                const hpPercent = (this.data.hp / this.data.maxHp) * 100;
+                this.elements.hpBar.style.width = `${hpPercent}%`;
+                
+                // 敌人信息
+                this.updateEnemyDisplay();
+            }
+            
+            updateEnemyDisplay() {
+                const hpPercent = (this.data.enemyHp / this.data.enemyMaxHp) * 100;
+                this.elements.enemyHpBar.style.width = `${hpPercent}%`;
+            }
+            
+            addMessage(type, text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+                messageDiv.textContent = text;
+                
+                this.elements.messagePanel.appendChild(messageDiv);
+                this.elements.messagePanel.scrollTop = this.elements.messagePanel.scrollHeight;
+                
+                // 限制消息数量
+                const messages = this.elements.messagePanel.querySelectorAll('.message');
+                if (messages.length > 20) {
+                    messages[0].remove();
+                }
+            }
+            
+            playSound(soundElement) {
+                if (!soundElement) return;
+                
+                try {
+                    soundElement.currentTime = 0;
+                    soundElement.play().catch(e => {
+                        console.log("音频播放失败:", e);
+                    });
+                } catch (e) {
+                    console.log("音频错误:", e);
+                }
+            }
+            
+            // ===================== 存档系统 =====================
+            saveGame() {
+                const saveData = this.data.save();
+                this.addMessage('system', `💾 游戏已存档！存档时间：${new Date(saveData.timestamp).toLocaleTimeString()}`);
+            }
+            
+            loadGame() {
+                if (this.data.load()) {
+                    this.addMessage('system', '📂 游戏已读取！');
+                    
+                    // 更新界面
+                    const isKnight = this.data.faction === 'knight';
+                    this.elements.factionBadge.textContent = isKnight ? '骑士锐' : '芊芊牛';
+                    this.elements.factionBadge.className = 'faction-badge ' + (isKnight ? 'knight-badge' : 'cow-badge');
+                    this.elements.battleArea.className = isKnight ? 'battle-area' : 'battle-area cow-character';
+                    
+                    this.elements.factionSelect.style.display = 'none';
+                    this.elements.gameMain.style.display = 'block';
+                    this.data.gameState = 'battle';
+                    
+                    this.spawnEnemy();
+                    this.updateDisplay();
+                } else {
+                    this.addMessage('system', '📂 没有找到存档文件！');
+                }
+            }
+        }
+
+        // ===================== 启动游戏 =====================
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new KnightVsCowGame();
+            
+            // 添加触摸事件支持
+            document.querySelectorAll('.faction-card, button').forEach(element => {
+                element.addEventListener('touchstart', function(e) {
+                    this.style.transform = 'scale(0.95)';
+                });
+                element.addEventListener('touchend', function(e) {
+                    this.style.transform = '';
+                });
+            });
+            
+            // 尝试自动读取存档
+            setTimeout(() => {
+                const saveData = localStorage.getItem('knightVsCowSave');
+                if (saveData) {
+                    const data = JSON.parse(saveData);
+                    const timeAgo = Math.floor((Date.now() - data.timestamp) / 1000 / 60);
+                    game.addMessage('system', `📂 发现存档文件，${timeAgo}分钟前保存。点击"读档"按钮加载。`);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
